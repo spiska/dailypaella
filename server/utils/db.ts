@@ -3,7 +3,7 @@ import * as schema from '../db/schema'
 let db: ReturnType<typeof createDb> | undefined
 
 async function createDb(url: string) {
-  const connection = { url, authToken: process.env.TURSO_AUTH_TOKEN }
+  const connection = { url, authToken: process.env.TURSO_AUTH_TOKEN || undefined }
 
   if (url.startsWith('file:')) {
     // Local SQLite file for development. Needs the native libSQL binding, which

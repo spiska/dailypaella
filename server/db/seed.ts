@@ -6,7 +6,7 @@ import { sources } from './schema.ts'
 const url = process.env.TURSO_DATABASE_URL
 if (!url) throw new Error('TURSO_DATABASE_URL is not set')
 
-const db = drizzle(createClient({ url, authToken: process.env.TURSO_AUTH_TOKEN }))
+const db = drizzle(createClient({ url, authToken: process.env.TURSO_AUTH_TOKEN || undefined }))
 
 await db
   .insert(sources)

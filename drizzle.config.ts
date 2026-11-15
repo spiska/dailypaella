@@ -12,6 +12,7 @@ export default defineConfig({
   out: './server/db/migrations',
   dbCredentials: {
     url: process.env.TURSO_DATABASE_URL!,
-    authToken: process.env.TURSO_AUTH_TOKEN,
+    // An empty value in .env must count as "no token" (local file database).
+    authToken: process.env.TURSO_AUTH_TOKEN || undefined,
   },
 })
