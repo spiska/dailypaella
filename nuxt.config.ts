@@ -20,6 +20,9 @@ export default defineNuxtConfig({
     },
   },
 
+  // Fonts are self-hosted so visitors make no requests to third parties.
+  css: ['@fontsource-variable/inter', '@fontsource-variable/fraunces'],
+
   // The overview changes a few times a day, so serve it from cache and only
   // touch the database when the cache is refreshed.
   routeRules: {
