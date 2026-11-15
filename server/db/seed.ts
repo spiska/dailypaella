@@ -1,12 +1,12 @@
 // Inserts the initial sources. Safe to run repeatedly.
-import { neon } from '@neondatabase/serverless'
-import { drizzle } from 'drizzle-orm/neon-http'
+import { createClient } from '@libsql/client'
+import { drizzle } from 'drizzle-orm/libsql'
 import { sources } from './schema.ts'
 
-const url = process.env.DATABASE_URL
-if (!url) throw new Error('DATABASE_URL is not set')
+const url = process.env.TURSO_DATABASE_URL
+if (!url) throw new Error('TURSO_DATABASE_URL is not set')
 
-const db = drizzle(neon(url))
+const db = drizzle(createClient({ url, authToken: process.env.TURSO_AUTH_TOKEN }))
 
 await db
   .insert(sources)

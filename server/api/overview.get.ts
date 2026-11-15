@@ -7,7 +7,7 @@ const MAX_ITEMS = 30
 
 /** The current overview: recent articles, most important first. */
 export default defineEventHandler(async () => {
-  const db = useDb()
+  const db = await useDb()
   const since = new Date(Date.now() - WINDOW_HOURS * 3_600_000)
 
   const rows = await db

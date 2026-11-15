@@ -14,7 +14,7 @@
     "db:seed": "node --env-file-if-exists=.env server/db/seed.ts"
   },
   "dependencies": {
-    "@neondatabase/serverless": "^1.2.1",
+    "@libsql/client": "^0.18.0",
     "drizzle-orm": "^0.45.4",
     "nuxt": "^4.6.4",
     "vue": "^3.5.45",
