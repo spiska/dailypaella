@@ -1,0 +1,29 @@
+{
+  "name": "dailypaella",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "typecheck": "nuxt typecheck",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:seed": "node --env-file-if-exists=.env server/db/seed.ts"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.2.1",
+    "drizzle-orm": "^0.45.4",
+    "nuxt": "^4.6.4",
+    "vue": "^3.5.45",
+    "vue-router": "^5.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "drizzle-kit": "^0.31.11",
+    "typescript": "^6.0.3",
+    "vue-tsc": "^3.3.14"
+  }
+}
