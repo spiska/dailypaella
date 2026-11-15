@@ -97,13 +97,12 @@ a {
   color: var(--muted);
 }
 
-/* Short saffron bar instead of a full-width rule. */
+/* Saffron rule under the masthead. */
 .masthead::after {
   content: '';
   display: block;
-  width: 3rem;
   height: 3px;
-  margin: 1.5rem auto 0;
+  margin: 1.5rem 0 0;
   border-radius: 2px;
   background: var(--saffron);
 }
