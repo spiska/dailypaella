@@ -2,9 +2,13 @@
   <div class="page">
     <NuxtRouteAnnouncer />
     <header class="masthead">
-      <img class="logo" src="/logo.png" alt="" width="72" height="72" />
-      <h1>The Daily Paella</h1>
-      <p>Spanish news, summarised in English.</p>
+      <div class="brand">
+        <img class="logo" src="/logo.png" alt="" width="64" height="64" />
+        <div>
+          <h1>The Daily Paella</h1>
+          <p>Spanish news, summarised in English.</p>
+        </div>
+      </div>
     </header>
 
     <main>
@@ -65,26 +69,31 @@ a {
 }
 
 .masthead {
-  text-align: center;
   margin-bottom: 2.5rem;
 }
 
+.brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
 .logo {
-  display: block;
-  margin: 0 auto 0.75rem;
+  flex: none;
 }
 
 .masthead h1 {
   margin: 0;
   font-family: var(--font-display);
-  font-size: clamp(2rem, 7vw, 2.75rem);
+  font-size: clamp(1.6rem, 6vw, 2.5rem);
   font-weight: 650;
   letter-spacing: -0.02em;
   line-height: 1.1;
 }
 
 .masthead p {
-  margin: 0.5rem 0 0;
+  margin: 0.25rem 0 0;
   color: var(--muted);
 }
 
