@@ -6,7 +6,7 @@
         <img class="logo" src="/logo.png" alt="" width="64" height="64" />
         <div>
           <h1>The Daily Paella</h1>
-          <p>Spanish news, summarised in English.</p>
+          <p>All the news that’s fit to simmer.</p>
         </div>
       </div>
     </header>
