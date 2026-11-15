@@ -7,6 +7,10 @@ export default defineNuxtConfig({
     head: {
       title: 'The Daily Paella',
       htmlAttrs: { lang: 'en' },
+      link: [
+        { rel: 'icon', href: '/favicon.ico', sizes: '48x48' },
+        { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
+      ],
       meta: [
         {
           name: 'description',

@@ -2,6 +2,7 @@
   <div class="page">
     <NuxtRouteAnnouncer />
     <header class="masthead">
+      <img class="logo" src="/logo.png" alt="" width="96" height="96" />
       <h1>The Daily Paella</h1>
       <p>Spanish news, summarised in English.</p>
     </header>
@@ -62,6 +63,11 @@ a {
   padding-bottom: 1rem;
   margin-bottom: 1.5rem;
   text-align: center;
+}
+
+.logo {
+  display: block;
+  margin: 0 auto 0.5rem;
 }
 
 .masthead h1 {
