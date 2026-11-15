@@ -4,8 +4,6 @@ Spanish news, summarised in English. Headlines from several Spanish newspapers,
 mixed in one pan: each story gets a short machine-generated English summary and
 a link to the original article.
 
-This is a non-commercial, open-source side project.
-
 ## How it works
 
 ```
