@@ -99,7 +99,8 @@ ON CONFLICT (url) DO UPDATE SET feed_position = excluded.feed_position;
 
 ### 2. Summary workflow (writes `summaries`)
 
-Picks recent articles that have no summary yet, most prominent first:
+At the start of each run it loads the recent articles that have no summary yet,
+most prominent first:
 
 ```sql
 SELECT a.id, a.title_original, a.description_original
@@ -109,11 +110,13 @@ WHERE s.id IS NULL
   AND a.summary_attempts < 3
   AND a.published_at >= unixepoch() - 48 * 3600
 ORDER BY a.feed_position IS NULL, a.feed_position, a.published_at DESC
-LIMIT 30;
+LIMIT 200;
 ```
 
-For each one it asks the LLM for an English title, a 2-3 sentence summary, an
-importance score and a category, then stores the result:
+It works through the whole list in batches of 10. Each article gets its own LLM
+call asking for an English title, a 2-3 sentence summary, an importance score
+and a category. A valid reply is stored straight away, so an interrupted run
+loses nothing:
 
 ```sql
 INSERT INTO summaries
@@ -122,7 +125,8 @@ VALUES (?, ?, ?, ?, ?, ?, ?)
 ON CONFLICT (article_id) DO NOTHING;
 ```
 
-If the LLM call fails or returns something invalid:
+An invalid reply is retried once. If it is invalid again, the attempt is counted
+and the article is skipped until the next run:
 
 ```sql
 UPDATE articles SET summary_attempts = summary_attempts + 1 WHERE id = ?;
@@ -130,6 +134,8 @@ UPDATE articles SET summary_attempts = summary_attempts + 1 WHERE id = ?;
 
 - `score` is the model's 1-10 importance rating; `model` is the model name.
 - `prompt_version` is an integer that is bumped whenever the prompt changes.
+- If the LLM service itself is unavailable, the run stops and no attempt is
+  counted. Otherwise one outage would permanently retire every waiting article.
 - This workflow must not run in parallel with itself.
 
 ### Regenerating summaries
