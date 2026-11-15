@@ -15,7 +15,8 @@ RSS feed -> dedupe -> local LLM -> Turso  <-  Nuxt app (cached overview page)
   the feeds listed in the `sources` table into the database. The other asks a
   local LLM for a short English summary of each new article.
 - **The web app** (this repository) is a Nuxt app on Vercel. It reads recent
-  articles from [Turso](https://turso.tech) (SQLite), ranks them, and shows an overview.
+  articles from [Turso](https://turso.tech) (SQLite) and shows them day by day, the
+  most important stories of each day first.
   The page is cached, so the database is only queried when the cache refreshes.
 
 ## Content rules
@@ -63,7 +64,7 @@ app/                    Pages and layout
 server/api/             API routes
 server/db/schema.ts     Database schema (Drizzle) and migrations
 server/utils/db.ts      Database client
-shared/utils/ranking.ts Importance ranking formula
+shared/utils/days.ts    Calendar-day helpers (Spanish time)
 ```
 
 ## Ingestion contract

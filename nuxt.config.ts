@@ -27,6 +27,7 @@ export default defineNuxtConfig({
   // touch the database when the cache is refreshed.
   routeRules: {
     '/': { isr: 3600 },
+    '/day/**': { isr: 3600 },
   },
 
   nitro: {
