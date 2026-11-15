@@ -8,6 +8,13 @@
       "when": 1794772653498,
       "tag": "0000_rich_falcon",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1794777773061,
+      "tag": "0001_split_summaries",
+      "breakpoints": true
     }
   ]
 }
