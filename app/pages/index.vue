@@ -22,7 +22,7 @@ function formatTime(iso: string) {
   <ol v-else class="stories">
     <li v-for="item in items" :key="item.id" class="story">
       <p class="kicker">
-        <a class="source" :href="item.sourceUrl" rel="noopener external">{{ item.sourceName }}</a>
+        <a class="source" :href="item.sourceUrl" target="_blank" rel="noopener external">{{ item.sourceName }}</a>
         <template v-if="item.category">
           <span class="dot" aria-hidden="true" />
           <span>{{ item.category }}</span>
@@ -31,10 +31,10 @@ function formatTime(iso: string) {
         <time :datetime="item.publishedAt">{{ formatTime(item.publishedAt) }}</time>
       </p>
       <h2>
-        <a :href="item.url" rel="noopener external">{{ item.titleEn }}</a>
+        <a :href="item.url" target="_blank" rel="noopener external">{{ item.titleEn }}</a>
       </h2>
       <p class="summary">{{ item.summaryEn }}</p>
-      <a class="more" :href="item.url" rel="noopener external">
+      <a class="more" :href="item.url" target="_blank" rel="noopener external">
         Read the original <span aria-hidden="true">→</span>
       </a>
     </li>
