@@ -17,8 +17,8 @@
 
     <footer class="footer">
       <p>
-        Summaries are machine-generated from each outlet's public RSS feed and may contain errors.
-        Always read the original article.
+        Summaries on this site are written by a machine, not a journalist, and may contain errors.
+        For the full story, always read the original article.
       </p>
     </footer>
   </div>
