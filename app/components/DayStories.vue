@@ -155,6 +155,18 @@ defineProps<{
   text-decoration: none;
 }
 
+/*
+ * Unread headlines use the strongest text colour, already-read ones fade to
+ * grey. Browsers only allow colour changes for visited links.
+ */
+.story h3 a:link {
+  color: var(--text-strong);
+}
+
+.story h3 a:visited {
+  color: var(--muted);
+}
+
 .story h3 a:hover {
   color: var(--accent);
 }

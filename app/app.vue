@@ -31,6 +31,8 @@
   --muted: #78716c;
   --accent: #c2410c;
   --saffron: #f5b301;
+  /* Strongest text colour, for unread headlines. */
+  --text-strong: #000;
   --rule: #e7e2d9;
   --font-display: 'Fraunces Variable', Georgia, serif;
   --font-body: 'Inter Variable', system-ui, sans-serif;
@@ -44,6 +46,7 @@
     --muted: #a8a095;
     --accent: #fb923c;
     --rule: #2b2722;
+    --text-strong: #fff;
   }
 }
 
