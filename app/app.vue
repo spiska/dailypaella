@@ -1,10 +1,19 @@
 <script setup lang="ts">
 // Cookieless analytics (Umami). Only loaded when a website ID is configured,
-// so local development and forks send nothing.
+// so local development and forks send nothing. Script and events go through
+// our own /p proxy (server/routes/p) so content blockers do not drop them.
 const { umami } = useRuntimeConfig().public
 if (umami.websiteId) {
+  const origin = useRequestURL().origin
   useHead({
-    script: [{ src: umami.scriptUrl, defer: true, 'data-website-id': umami.websiteId }],
+    script: [
+      {
+        src: '/p/s.js',
+        defer: true,
+        'data-website-id': umami.websiteId,
+        'data-host-url': `${origin}/p`,
+      },
+    ],
   })
 }
 </script>

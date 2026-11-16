@@ -25,7 +25,6 @@ export default defineNuxtConfig({
       // Set with NUXT_PUBLIC_UMAMI_WEBSITE_ID; analytics stay off while it is empty.
       umami: {
         websiteId: '',
-        scriptUrl: 'https://cloud.umami.is/script.js',
       },
     },
   },
