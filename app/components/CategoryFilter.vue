@@ -35,15 +35,34 @@ const label = (category: string) => category.charAt(0).toUpperCase() + category.
 </template>
 
 <style scoped>
+/*
+ * Always one row. On wide screens all categories fit; on narrow ones the row
+ * scrolls sideways instead of wrapping, with the edge fading out as a hint.
+ */
 .filter {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 0.375rem;
   margin: 0 0 2rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  mask-image: linear-gradient(to right, #000 calc(100% - 1.5rem), transparent);
+}
+
+.filter::-webkit-scrollbar {
+  display: none;
+}
+
+/* No fade when everything fits (wide screens). */
+@media (min-width: 42rem) {
+  .filter {
+    mask-image: none;
+  }
 }
 
 button {
-  padding: 0.3rem 0.8rem;
+  flex: none;
+  padding: 0.3rem 0.625rem;
   border: 1px solid var(--rule);
   border-radius: 999px;
   background: transparent;
