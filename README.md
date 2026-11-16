@@ -23,6 +23,12 @@ repository.
 - No images from the feeds are stored or shown.
 - Summaries are labelled as machine-generated.
 
+### Analytics
+
+The site counts visits and clicks on article links with
+[Umami](https://umami.is), which uses no cookies and stores no personal data.
+Analytics are off unless `NUXT_PUBLIC_UMAMI_WEBSITE_ID` is set.
+
 ### Source removal
 
 If you represent a publication listed here and want it removed, please open an
@@ -70,3 +76,7 @@ production database.
 
 Optionally set `VERCEL_BYPASS_TOKEN` to a random string of at least 32
 characters to allow refreshing the cached pages on demand.
+
+To enable analytics, set `NUXT_PUBLIC_UMAMI_WEBSITE_ID` to the website ID from
+Umami. Scope it to the Production environment so preview deployments are not
+counted.

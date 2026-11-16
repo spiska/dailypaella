@@ -1,20 +1,38 @@
 <script setup lang="ts">
 import { importance } from '#shared/utils/importance'
 
+type Item = {
+  id: number
+  url: string
+  titleEn: string
+  summaryEn: string
+  category: string | null
+  score: number
+  publishedAt: string
+  sourceName: string
+  sourceUrl: string
+}
+
 defineProps<{
   day: string
-  items: {
-    id: number
-    url: string
-    titleEn: string
-    summaryEn: string
-    category: string | null
-    score: number
-    publishedAt: string
-    sourceName: string
-    sourceUrl: string
-  }[]
+  items: Item[]
 }>()
+
+/**
+ * Umami data attributes for a click on an article link. Only facts about the
+ * story are sent, nothing about the reader. Values are recorded as strings.
+ */
+function clickEvent(item: Item, link: 'headline' | 'read-more') {
+  return {
+    'data-umami-event': 'article-click',
+    'data-umami-event-source': item.sourceName,
+    'data-umami-event-title': item.titleEn.slice(0, 200),
+    'data-umami-event-importance': importance(item.score),
+    'data-umami-event-score': String(item.score),
+    'data-umami-event-category': item.category ?? 'none',
+    'data-umami-event-link': link,
+  }
+}
 </script>
 
 <template>
@@ -26,7 +44,14 @@ defineProps<{
     <ol class="stories">
       <li v-for="item in items" :key="item.id" class="story" :class="importance(item.score)">
         <p class="kicker">
-          <a class="source" :href="item.sourceUrl" target="_blank" rel="noopener external">{{ item.sourceName }}</a>
+          <a
+            class="source"
+            :href="item.sourceUrl"
+            target="_blank"
+            rel="noopener external"
+            data-umami-event="source-click"
+            :data-umami-event-source="item.sourceName"
+          >{{ item.sourceName }}</a>
           <template v-if="item.category">
             <span class="dot" aria-hidden="true" />
             <span>{{ item.category }}</span>
@@ -35,10 +60,10 @@ defineProps<{
           <time :datetime="item.publishedAt">{{ formatMadridTime(item.publishedAt) }}</time>
         </p>
         <h3>
-          <a :href="item.url" target="_blank" rel="noopener external">{{ item.titleEn }}</a>
+          <a :href="item.url" target="_blank" rel="noopener external" v-bind="clickEvent(item, 'headline')">{{ item.titleEn }}</a>
         </h3>
         <p class="summary">{{ item.summaryEn }}</p>
-        <a class="more" :href="item.url" target="_blank" rel="noopener external">
+        <a class="more" :href="item.url" target="_blank" rel="noopener external" v-bind="clickEvent(item, 'read-more')">
           Read the original <span aria-hidden="true">→</span>
         </a>
       </li>

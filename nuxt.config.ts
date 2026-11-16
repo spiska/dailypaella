@@ -20,6 +20,16 @@ export default defineNuxtConfig({
     },
   },
 
+  runtimeConfig: {
+    public: {
+      // Set with NUXT_PUBLIC_UMAMI_WEBSITE_ID; analytics stay off while it is empty.
+      umami: {
+        websiteId: '',
+        scriptUrl: 'https://cloud.umami.is/script.js',
+      },
+    },
+  },
+
   // Fonts are self-hosted so visitors make no requests to third parties.
   css: ['@fontsource-variable/inter', '@fontsource-variable/fraunces'],
 

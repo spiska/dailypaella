@@ -1,3 +1,14 @@
+<script setup lang="ts">
+// Cookieless analytics (Umami). Only loaded when a website ID is configured,
+// so local development and forks send nothing.
+const { umami } = useRuntimeConfig().public
+if (umami.websiteId) {
+  useHead({
+    script: [{ src: umami.scriptUrl, defer: true, 'data-website-id': umami.websiteId }],
+  })
+}
+</script>
+
 <template>
   <div class="page">
     <NuxtRouteAnnouncer />
