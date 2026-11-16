@@ -6,18 +6,13 @@ a link to the original article.
 
 ## How it works
 
-```
-n8n (self-hosted)                            Vercel
-RSS feed -> dedupe -> local LLM -> Turso  <-  Nuxt app (cached overview page)
-```
+The site is a Nuxt app hosted on Vercel, backed by a [Turso](https://turso.tech)
+(SQLite) database. It shows the summarised stories day by day, the most
+important stories of each day first. Pages are cached, so the database is only
+queried when the cache refreshes.
 
-- **Ingestion** runs in two self-hosted [n8n](https://n8n.io) workflows. One syncs
-  the feeds listed in the `sources` table into the database. The other asks a
-  local LLM for a short English summary of each new article.
-- **The web app** (this repository) is a Nuxt app on Vercel. It reads recent
-  articles from [Turso](https://turso.tech) (SQLite) and shows them day by day, the
-  most important stories of each day first.
-  The page is cached, so the database is only queried when the cache refreshes.
+The database is filled by a separate process that is not part of this
+repository.
 
 ## Content rules
 
@@ -67,95 +62,11 @@ server/utils/db.ts      Database client
 shared/utils/days.ts    Calendar-day helpers (Spanish time)
 ```
 
-## Ingestion contract
-
-Ingestion is split into two n8n workflows that only share the database. Both
-write to Turso through its [HTTP API](https://docs.turso.tech/sdk/http/quickstart)
-(an HTTP Request node with the database token as a Bearer header).
-
-The schema keeps facts and derived data apart: `articles` holds only what the
-feed said, `summaries` only what the LLM produced. An article without a row in
-`summaries` is simply not processed yet.
-
-### 1. Sync workflow (writes `articles`)
-
-Runs often and makes no LLM calls. For each enabled source it fetches the feed,
-keeps only title, description (HTML stripped), link, publication date and
-position, and runs the following in one transaction:
-
-```sql
--- Articles that dropped out of the feed lose their position.
-UPDATE articles SET feed_position = NULL
-WHERE source_id = ? AND feed_position IS NOT NULL;
-
--- Once per feed item.
-INSERT INTO articles
-  (source_id, url, title_original, description_original, published_at, feed_position)
-VALUES (?, ?, ?, ?, ?, ?)
-ON CONFLICT (url) DO UPDATE SET feed_position = excluded.feed_position;
-```
-
-- `published_at` is a Unix timestamp in seconds.
-- `feed_position` is the item's 0-based position in the feed.
-
-### 2. Summary workflow (writes `summaries`)
-
-At the start of each run it loads the recent articles that have no summary yet,
-most prominent first:
-
-```sql
-SELECT a.id, a.title_original, a.description_original
-FROM articles a
-LEFT JOIN summaries s ON s.article_id = a.id
-WHERE s.id IS NULL
-  AND a.summary_attempts < 3
-  AND a.published_at >= unixepoch() - 48 * 3600
-ORDER BY a.feed_position IS NULL, a.feed_position, a.published_at DESC
-LIMIT 200;
-```
-
-It works through the whole list in batches of 10. Each article gets its own LLM
-call asking for an English title, a 2-3 sentence summary, an importance score
-and a category. A valid reply is stored straight away, so an interrupted run
-loses nothing:
-
-```sql
-INSERT INTO summaries
-  (article_id, title_en, summary_en, score, category, model, prompt_version)
-VALUES (?, ?, ?, ?, ?, ?, ?)
-ON CONFLICT (article_id) DO NOTHING;
-```
-
-An invalid reply is retried once. If it is invalid again, the attempt is counted
-and the article is skipped until the next run:
-
-```sql
-UPDATE articles SET summary_attempts = summary_attempts + 1 WHERE id = ?;
-```
-
-- `score` is the model's 1-10 importance rating; `model` is the model name.
-- `prompt_version` is an integer that is bumped whenever the prompt changes.
-- If the LLM service itself is unavailable, the run stops and no attempt is
-  counted. Otherwise one outage would permanently retire every waiting article.
-- This workflow must not run in parallel with itself.
-
-### Regenerating summaries
-
-After changing the prompt or the model, delete the stale summaries and the
-summary workflow will recreate them on its next runs:
-
-```sql
-DELETE FROM summaries WHERE prompt_version < ?;
-UPDATE articles SET summary_attempts = 0;
-```
-
-### Removing a source
-
-Deleting a row from `sources` also deletes its articles and their summaries.
-
 ## Deployment
 
 Deploy to Vercel and add the Turso integration, which sets `TURSO_DATABASE_URL`
 and `TURSO_AUTH_TOKEN`. Run `pnpm db:migrate` and `pnpm db:seed` once against the
-production database. Set
-`VERCEL_BYPASS_TOKEN` to a random string of at least 32 characters.
+production database.
+
+Optionally set `VERCEL_BYPASS_TOKEN` to a random string of at least 32
+characters to allow refreshing the cached pages on demand.

@@ -33,8 +33,8 @@ export default defineNuxtConfig({
   nitro: {
     vercel: {
       config: {
-        // Lets the ingestion workflow refresh the cached page right after new
-        // articles land: request `/` with header `x-prerender-revalidate: <token>`.
+        // Allows refreshing a cached page on demand: request it with the
+        // header `x-prerender-revalidate: <token>`.
         bypassToken: process.env.VERCEL_BYPASS_TOKEN,
       },
     },

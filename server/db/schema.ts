@@ -29,7 +29,7 @@ export const sources = sqliteTable('sources', {
 })
 
 /**
- * One item as the source published it. Written only by the sync workflow.
+ * One item as the source published it.
  * Holds the feed's title and description only; no images, no full article text.
  */
 export const articles = sqliteTable(
@@ -59,7 +59,7 @@ export const articles = sqliteTable(
   (t) => [index('articles_published_at_idx').on(t.publishedAt)],
 )
 
-/** Machine-generated English summary of an article. Written only by the AI workflow. */
+/** Machine-generated English summary of an article. */
 export const summaries = sqliteTable('summaries', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   articleId: integer('article_id')
