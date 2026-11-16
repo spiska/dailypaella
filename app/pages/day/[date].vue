@@ -9,6 +9,10 @@ if (!isValidDay(day)) {
 const { data, error } = await useFetch('/api/overview', { query: { day } })
 
 useHead({ title: `${formatDay(day)} · The Daily Paella` })
+
+const filter = useCategoryFilter()
+const categories = computed(() => filter.available(data.value?.days.flatMap((d) => d.items) ?? []))
+const days = computed(() => filter.apply(data.value?.days ?? []))
 </script>
 
 <template>
@@ -17,10 +21,13 @@ useHead({ title: `${formatDay(day)} · The Daily Paella` })
   <p v-if="error" class="notice">This day is unavailable right now. Please try again later.</p>
 
   <template v-else>
-    <DayStories v-if="data?.days.length" :day="day" :items="data.days[0]!.items" />
+    <CategoryFilter :categories="categories" :selected="filter.selected.value" @select="filter.select" />
+    <DayStories v-if="days.length" :day="day" :items="days[0]!.items" />
     <template v-else>
       <h2 class="empty-heading">{{ formatDay(day) }}</h2>
-      <p class="notice">No stories for this day.</p>
+      <p class="notice">
+        {{ data?.days.length ? `No ${filter.selected.value} stories for this day.` : 'No stories for this day.' }}
+      </p>
     </template>
     <DayNav :older="data?.older ?? null" :newer="data?.newer ?? null" />
   </template>

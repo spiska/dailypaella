@@ -1,5 +1,9 @@
 <script setup lang="ts">
 const { data, error } = await useFetch('/api/overview')
+
+const filter = useCategoryFilter()
+const categories = computed(() => filter.available(data.value?.days.flatMap((d) => d.items) ?? []))
+const days = computed(() => filter.apply(data.value?.days ?? []))
 </script>
 
 <template>
@@ -8,7 +12,9 @@ const { data, error } = await useFetch('/api/overview')
   <p v-else-if="!data?.days.length" class="notice">No stories yet. Check back soon.</p>
 
   <template v-else>
-    <DayStories v-for="group in data.days" :key="group.day" :day="group.day" :items="group.items" />
+    <CategoryFilter :categories="categories" :selected="filter.selected.value" @select="filter.select" />
+    <DayStories v-for="group in days" :key="group.day" :day="group.day" :items="group.items" />
+    <p v-if="!days.length" class="notice">No {{ filter.selected.value }} stories in these days.</p>
     <DayNav :older="data.older" :newer="null" />
   </template>
 </template>
