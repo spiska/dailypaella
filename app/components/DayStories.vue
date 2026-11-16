@@ -51,9 +51,14 @@ defineProps<{
   margin-top: 3rem;
 }
 
+/* Stays pinned to the top while its day scrolls past; the next day pushes it out. */
 .day-heading {
+  position: sticky;
+  top: 0;
+  z-index: 1;
   margin: 0 0 1.5rem;
-  padding-bottom: 0.5rem;
+  padding: 0.75rem 0 0.5rem;
+  background: var(--bg);
   border-bottom: 1px solid var(--text);
   font-family: var(--font-display);
   font-size: 1.125rem;
