@@ -18,6 +18,11 @@ defineProps<{
   items: Item[]
 }>()
 
+/** Lighter stories are kept, but shown as a headline only, whatever their score. */
+const BRIEF_CATEGORIES = new Set(['lifestyle'])
+const isBrief = (item: Item) => item.category !== null && BRIEF_CATEGORIES.has(item.category)
+const tier = (item: Item) => (isBrief(item) ? 'brief' : importance(item.score))
+
 /**
  * Umami data attributes for a click on an article link. Only facts about the
  * story are sent, nothing about the reader. Values are recorded as strings.
@@ -74,7 +79,7 @@ function scrollToTop() {
     </h2>
 
     <ol class="stories">
-      <li v-for="item in items" :key="item.id" class="story" :class="importance(item.score)">
+      <li v-for="item in items" :key="item.id" class="story" :class="tier(item)">
         <p class="kicker">
           <a
             class="source"
@@ -94,8 +99,8 @@ function scrollToTop() {
         <h3>
           <a :href="item.url" target="_blank" rel="noopener external" v-bind="clickEvent(item, 'headline')">{{ item.titleEn }}</a>
         </h3>
-        <p class="summary">{{ item.summaryEn }}</p>
-        <a class="more" :href="item.url" target="_blank" rel="noopener external" v-bind="clickEvent(item, 'read-more')">
+        <p v-if="!isBrief(item)" class="summary">{{ item.summaryEn }}</p>
+        <a v-if="!isBrief(item)" class="more" :href="item.url" target="_blank" rel="noopener external" v-bind="clickEvent(item, 'read-more')">
           Read the original <span aria-hidden="true">→</span>
         </a>
       </li>
@@ -247,7 +252,8 @@ function scrollToTop() {
 /*
  * Importance is shown by size and weight; the order stays chronological.
  * Major stories get a much larger headline and more room. Minor ones are
- * compact, with a smaller, quieter summary.
+ * compact, with a smaller, quieter summary. Brief ones (light categories)
+ * show only the headline.
  */
 .story.major {
   padding-block: 2.25rem;
@@ -284,6 +290,23 @@ function scrollToTop() {
 
 .minor .more {
   font-size: 0.8125rem;
+}
+
+/* Lifestyle and similar light stories: a small headline, no summary. */
+.story.brief {
+  padding-block: 0.875rem;
+}
+
+.brief .kicker {
+  margin-bottom: 0.25rem;
+  font-size: 0.6875rem;
+}
+
+.brief h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.35;
 }
 
 .story h3 a {

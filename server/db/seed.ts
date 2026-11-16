@@ -17,6 +17,12 @@ await db
       homepageUrl: 'https://elpais.com',
       feedUrl: 'https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/portada',
     },
+    {
+      slug: '20minutos',
+      name: '20minutos',
+      homepageUrl: 'https://www.20minutos.es',
+      feedUrl: 'https://www.20minutos.es/rss/',
+    },
   ])
   .onConflictDoNothing({ target: sources.slug })
 
