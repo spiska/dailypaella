@@ -33,11 +33,43 @@ function clickEvent(item: Item, link: 'headline' | 'read-more') {
     'data-umami-event-link': link,
   }
 }
+
+// The heading is sticky; a zero-height marker right above it scrolls off the
+// top exactly when the heading starts sticking, which reveals the small logo.
+const marker = ref<HTMLElement>()
+const stuck = ref(false)
+let observer: IntersectionObserver | undefined
+
+onMounted(() => {
+  if (!marker.value) return
+  observer = new IntersectionObserver(([entry]) => {
+    stuck.value = !!entry && !entry.isIntersecting && entry.boundingClientRect.top < 0
+  })
+  observer.observe(marker.value)
+})
+
+onBeforeUnmount(() => observer?.disconnect())
+
+function scrollToTop() {
+  const smooth = !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  window.scrollTo({ top: 0, behavior: smooth ? 'smooth' : 'auto' })
+}
 </script>
 
 <template>
   <section class="day">
-    <h2 class="day-heading">
+    <div ref="marker" class="stick-marker" aria-hidden="true" />
+    <h2 class="day-heading" :class="{ stuck }">
+      <button
+        class="home-icon"
+        type="button"
+        :tabindex="stuck ? 0 : -1"
+        :aria-hidden="!stuck"
+        aria-label="Back to top"
+        @click="scrollToTop"
+      >
+        <img src="/logo.png" alt="" width="22" height="22" />
+      </button>
       <NuxtLink :to="`/day/${day}`">{{ formatDay(day) }}</NuxtLink>
     </h2>
 
@@ -89,6 +121,55 @@ function clickEvent(item: Item, link: 'headline' | 'read-more') {
   font-size: 1.125rem;
   font-weight: 600;
   letter-spacing: -0.01em;
+}
+
+.day-heading {
+  display: flex;
+  align-items: center;
+}
+
+.stick-marker {
+  height: 0;
+}
+
+/* Small logo that slides in while the heading is stuck; it scrolls to the top. */
+.home-icon {
+  display: flex;
+  flex: none;
+  width: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  opacity: 0;
+  transition:
+    width 0.2s ease,
+    margin 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.home-icon img {
+  flex: none;
+}
+
+.stuck .home-icon {
+  width: 22px;
+  margin-right: 0.625rem;
+  opacity: 1;
+}
+
+.home-icon:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 50%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-icon {
+    transition: none;
+  }
 }
 
 .day-heading a {
