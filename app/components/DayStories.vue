@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { importance } from '#shared/utils/importance'
+
 defineProps<{
   day: string
   items: {
@@ -7,6 +9,7 @@ defineProps<{
     titleEn: string
     summaryEn: string
     category: string | null
+    score: number
     publishedAt: string
     sourceName: string
     sourceUrl: string
@@ -21,7 +24,7 @@ defineProps<{
     </h2>
 
     <ol class="stories">
-      <li v-for="item in items" :key="item.id" class="story">
+      <li v-for="item in items" :key="item.id" class="story" :class="importance(item.score)">
         <p class="kicker">
           <a class="source" :href="item.sourceUrl" target="_blank" rel="noopener external">{{ item.sourceName }}</a>
           <template v-if="item.category">
@@ -128,6 +131,19 @@ defineProps<{
   letter-spacing: -0.01em;
   line-height: 1.2;
   text-wrap: balance;
+}
+
+/* Importance is shown by headline size; the order stays chronological. */
+.major h3 {
+  font-size: clamp(1.75rem, 6.5vw, 2rem);
+  font-weight: 650;
+  line-height: 1.15;
+}
+
+.minor h3 {
+  font-size: 1.1875rem;
+  font-weight: 550;
+  line-height: 1.3;
 }
 
 .story h3 a {

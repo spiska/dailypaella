@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, gte, lt, sql } from 'drizzle-orm'
+import { and, asc, desc, eq, gte, lt } from 'drizzle-orm'
 import { articles, sources, summaries } from '../db/schema'
 
 const HOME_DAYS = 2
@@ -6,7 +6,8 @@ const MAX_ROWS = 1000
 
 /**
  * Summarised articles grouped by Madrid calendar day, newest day first. Within a
- * day the order is by importance: LLM score, then position in the feed.
+ * day stories are chronological, newest first; importance (`score`) is returned
+ * so the page can show it visually instead of reordering.
  *
  * - `?day=YYYY-MM-DD` returns that single day.
  * - Without `day` it returns the latest day that has stories plus the day before.
@@ -50,6 +51,7 @@ export default defineEventHandler(async (event) => {
         titleEn: summaries.titleEn,
         summaryEn: summaries.summaryEn,
         category: summaries.category,
+        score: summaries.score,
         publishedAt: articles.publishedAt,
         sourceName: sources.name,
         sourceUrl: sources.homepageUrl,
@@ -58,18 +60,13 @@ export default defineEventHandler(async (event) => {
       .innerJoin(summaries, eq(summaries.articleId, articles.id))
       .innerJoin(sources, eq(articles.sourceId, sources.id))
       .where(and(gte(articles.publishedAt, start), lt(articles.publishedAt, end)))
-      .orderBy(
-        desc(summaries.score),
-        sql`${articles.feedPosition} is null`,
-        asc(articles.feedPosition),
-        desc(articles.publishedAt),
-      )
+      .orderBy(desc(articles.publishedAt), desc(articles.id))
       .limit(MAX_ROWS),
     summarised().where(lt(articles.publishedAt, start)).orderBy(desc(articles.publishedAt)).limit(1),
     summarised().where(gte(articles.publishedAt, end)).orderBy(asc(articles.publishedAt)).limit(1),
   ])
 
-  // Rows arrive sorted by importance; grouping keeps that order within each day.
+  // Rows arrive newest first; grouping keeps that order within each day.
   const byDay = new Map<string, typeof rows>()
   for (const row of rows) {
     const day = madridDay(row.publishedAt)
