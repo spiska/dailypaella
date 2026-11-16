@@ -36,12 +36,13 @@ const label = (category: string) => category.charAt(0).toUpperCase() + category.
 
 <style scoped>
 /*
- * Always one row. On wide screens all categories fit; on narrow ones the row
+ * Always one row. On wide screens all categories fit (sized so that every
+ * category plus "All" fits the 40rem column); on narrow ones the row
  * scrolls sideways instead of wrapping, with the edge fading out as a hint.
  */
 .filter {
   display: flex;
-  gap: 0.375rem;
+  gap: 0.25rem;
   margin: 0 0 2rem;
   overflow-x: auto;
   scrollbar-width: none;
@@ -62,13 +63,13 @@ const label = (category: string) => category.charAt(0).toUpperCase() + category.
 
 button {
   flex: none;
-  padding: 0.3rem 0.625rem;
+  padding: 0.3rem 0.5rem;
   border: 1px solid var(--rule);
   border-radius: 999px;
   background: transparent;
   color: var(--muted);
   font: inherit;
-  font-size: 0.8125rem;
+  font-size: 0.78125rem;
   font-weight: 500;
   cursor: pointer;
 }

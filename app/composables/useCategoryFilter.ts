@@ -6,7 +6,7 @@
 // browser. Doing it earlier would make the server and browser render differ.
 
 /** Same order and values as the allowed categories in the summary prompt. */
-export const CATEGORIES = ['politics', 'economy', 'society', 'world', 'culture', 'sports', 'science', 'other'] as const
+export const CATEGORIES = ['politics', 'economy', 'society', 'world', 'culture', 'sports', 'science', 'lifestyle', 'other'] as const
 
 interface Story {
   category: string | null
