@@ -89,11 +89,11 @@ defineProps<{
   border-top: 1px solid var(--rule);
 }
 
-.story:first-child {
+.stories > .story:first-child {
   padding-top: 0;
 }
 
-.story:last-child {
+.stories > .story:last-child {
   padding-bottom: 0;
 }
 
@@ -131,24 +131,53 @@ defineProps<{
 .story h3 {
   margin: 0 0 0.5rem;
   font-family: var(--font-display);
-  font-size: 1.5rem;
+  font-size: 1.375rem;
   font-weight: 600;
   letter-spacing: -0.01em;
   line-height: 1.2;
   text-wrap: balance;
 }
 
-/* Importance is shown by headline size; the order stays chronological. */
+/*
+ * Importance is shown by size and weight; the order stays chronological.
+ * Major stories get a much larger headline and more room. Minor ones are
+ * compact, with a smaller, quieter summary.
+ */
+.story.major {
+  padding-block: 2.25rem;
+}
+
 .major h3 {
-  font-size: clamp(1.75rem, 6.5vw, 2rem);
-  font-weight: 650;
-  line-height: 1.15;
+  margin-bottom: 0.625rem;
+  font-size: clamp(1.875rem, 8vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.major .summary {
+  font-size: 1.0625rem;
+}
+
+.story.minor {
+  padding-block: 1.25rem;
 }
 
 .minor h3 {
-  font-size: 1.1875rem;
+  margin-bottom: 0.375rem;
+  font-size: 1.125rem;
   font-weight: 550;
   line-height: 1.3;
+}
+
+.minor .summary {
+  margin-bottom: 0.5rem;
+  color: var(--muted);
+  font-size: 0.9375rem;
+}
+
+.minor .more {
+  font-size: 0.8125rem;
 }
 
 .story h3 a {
